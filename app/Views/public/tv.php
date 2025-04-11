@@ -21,7 +21,6 @@
         }
 
         .fullscreen-bg {
-            background-image: url('<?= base_url('files/iklan.jpg'); ?>');
             background-size: contain;
             background-position: center;
             width: 100%;
@@ -84,15 +83,7 @@
     <div class="running-text-container">
         <span class="running-text">JAM BUKA: SENIN - SABTU 13:00 - 04:00 | MINGGU 09:00 - 04:00</span>
     </div>
-
-
-
-
-
-
-
-
-    <div class="fullscreen-bg"></div>
+    <div class="body_iklan" style="display: none;"></div>
 
     <div class="modal fade bg-dark text-light" id="content" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-fullscreen">
@@ -154,37 +145,45 @@
         let myModal = document.getElementById("content");
         let modal = bootstrap.Modal.getOrCreateInstance(myModal);
         modal.show();
-        let urutan = ['ps', "billiard", 'ps', "billiard", "iklan"];
-
+        let urutan = ['ps', "iklan", 'billiard', "iklan", "ps"];
         let index = 0;
         let content = (order) => {
+            let timestamp = new Date().getTime();
             if (index == (urutan.length - 1)) {
                 index = 0;
             } else {
                 index++;
             }
-            console.log("content: " + order);
-            if (order !== "iklan") {
+            // <div style="background-image: url('http://localhost:8080/files/iklan.jpg'?1744396978151);" class="fullscreen-bg"></div>
+
+            if (order == "iklan") {
+                let html = `<div style="background-image: url('<?= base_url('files/iklan.jpg'); ?>?${timestamp}');" class="fullscreen-bg"></div>`;
+                $(".body_iklan").html(html);
+                setTimeout(() => {
+                    $(".body_iklan").fadeIn();
+                }, 300);
+            } else {
+                $(".body_iklan").fadeOut();
+                $(".body_iklan").html("");
                 post('landing/status_tv', {
                     order
                 }).then(res => {
-
                     let x = 1;
                     let html = '';
                     html += `<div class="d-flex justify-content-center" style="margin-bottom: 140px;padding: 90px 0px">
-                                <div style="padding: 50px 90px;font-size:100px" class="fw-bold text-center bg-success rounded-pill judul">${res.data.judul}</div>
-                            </div>`;
+                    <div style="padding: 50px 90px;font-size:100px" class="fw-bold text-center bg-success rounded-pill judul">${res.data.judul}</div>
+                </div>`;
                     res.data.data.forEach(e => {
                         let exp = e.perangkat.split(" ");
                         if (x == 1 || x % 5 == 1) {
                             html += `<div class="d-flex justify-content-center gap-5 mb-5">`;
                         }
                         html += `<div class="lingkaran ${(e.metode == "Over" ? "bg-danger opacity-75" : "")} border border border-light text-center p-5">
-                                    <div style="font-size: 40px;">${exp[0]}</div>
-                                    <div style="font-size: 200px;margin-top:-50px">${exp[1]}</div>
-                                    <div class="${(e.metode == "Available" ? "text-success" : "")}" style="font-size: 60px;margin-top:-30px">${e.metode}</div>
-                                    <div style="font-size: 50px;">${e.waktu}</div>
-                                </div>`;
+                        <div style="font-size: 40px;">${exp[0]}</div>
+                        <div style="font-size: 200px;margin-top:-50px">${exp[1]}</div>
+                        <div class="${(e.metode == "Available" ? "text-success" : "")}" style="font-size: 60px;margin-top:-30px">${e.metode}</div>
+                        <div style="font-size: 50px;">${e.waktu}</div>
+                    </div>`;
 
                         if (x % 5 == 0) {
                             html += `</div>`;
@@ -199,6 +198,7 @@
                         modal.show();
 
                     }, 300);
+
 
                 })
             }
@@ -226,21 +226,25 @@
         // let urutan = ['ps', 'iklan', 'billiard'];
 
 
-        function loopInterval() {
-            let order = urutan[index];
-            let delay = (order === "iklan") ? 5000 : 10000; // Atur waktu sesuai jenis konten
-            if (order === 'iklan') {
-                $(".fullscreen-bg").fadeIn();
-            } else {
-                $(".fullscreen-bg").fadeOut();
-            }
 
-            let myModal = document.getElementById("content");
-            let modal = bootstrap.Modal.getOrCreateInstance(myModal);
-            modal.show();
+        function loopInterval() {
             modal.hide();
+            let order = urutan[index];
+            let delay = (order === "iklan") ? 10000 : 3000; // Atur waktu sesuai jenis konten
+            // if (order === 'iklan') {
+            //     $(".fullscreen-bg").fadeIn();
+            //     setTimeout(() => {
+            //         $(".fullscreen-bg").attr("src", "<?= base_url('files/'); ?>iklan.jpg?" + timestamp);
+            //     }, 300);
+            // } else {
+            //     $(".fullscreen-bg").fadeOut();
+            // }
 
             content(order);
+
+            // let myModal = document.getElementById("content");
+            // let modal = bootstrap.Modal.getOrCreateInstance(myModal);
+
             setTimeout(loopInterval, delay); // Jalankan ulang dengan waktu baru
         }
 
