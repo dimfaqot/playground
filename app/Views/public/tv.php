@@ -225,8 +225,9 @@
 
 
         function loopInterval() {
-            let delay = (urutan[index] === "iklan") ? 5000 : 10000; // Atur waktu sesuai jenis konten
-            if (urutan[index] === 'iklan') {
+            let order = urutan[index];
+            let delay = (order === "iklan") ? 5000 : 10000; // Atur waktu sesuai jenis konten
+            if (order === 'iklan') {
                 $(".fullscreen-bg").fadeIn();
             } else {
                 $(".fullscreen-bg").fadeOut();
@@ -234,12 +235,14 @@
 
             modal.hide();
 
-            content(urutan[index]);
+            content(order);
             setTimeout(loopInterval, delay); // Jalankan ulang dengan waktu baru
         }
 
         // Mulai pertama kali
-        loopInterval();
+        setTimeout(() => {
+            loopInterval();
+        }, 7000);
     </script>
 </body>
 
