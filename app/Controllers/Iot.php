@@ -8,6 +8,15 @@ class Iot extends BaseController
 {
     public function grup_iot($grup)
     {
+        // $fun = new \App\Models\FunModel();
+        // $db = db('user');
+        // $q = $db->orderBy('id')->get()->getResultArray();
+
+        // foreach ($q as $i) {
+        //     $i['fulus'] = $fun->enkripsi_fulus($i, 0);
+        //     $db->where('id', $i['id']);
+        //     $db->update($i);
+        // }
         $fun = new IotModel();
         $data = $fun->all_perangkat($grup);
 
@@ -270,9 +279,10 @@ class Iot extends BaseController
 
     public function iot_tapping()
     {
-        $data = clear($this->request->getVar('data'));
-        $data2 = clear($this->request->getVar('data2'));
-        $jwt = encode_jwt(['data' => $data, 'data2' => $data2]);
+        // $data = clear($this->request->getVar('data'));
+        // $data2 = clear($this->request->getVar('data2'));
+        // $jwt = encode_jwt(['data' => $data, 'data2' => $data2]);
+        $jwt = clear($this->request->getVar('jwt'));
         $decode = decode_jwt($jwt);
 
         $exp = explode(" ", $decode['data2']);

@@ -7,6 +7,7 @@ $user = $db->orderBy('nama', 'ASC')->get()->getResultArray();
 
 <?= $this->section('content') ?>
 <h1 class="text-center" style="margin-top: 200px;">MENYALA!!!</h1>
+
 <div class="body_absen">
 
 </div>

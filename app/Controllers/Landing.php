@@ -2,8 +2,6 @@
 
 namespace App\Controllers;
 
-use CodeIgniter\Model;
-
 class Landing extends BaseController
 {
     function __construct()
@@ -15,6 +13,7 @@ class Landing extends BaseController
     }
     public function index($grup = "Billiard-1", $uid = "c3144c15"): string
     {
+        dd(encode_jwt(['id' => 1]));
         // $db = db('billiard');
         // $q = $db->whereIn('perangkat', ['Meja 15', "Meja 24"])->get()->getResultArray();
         // foreach ($q as $i) {
@@ -27,8 +26,8 @@ class Landing extends BaseController
     }
 
 
-    //https://playground.walisongosragen.com/auth/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MX0.tBV0kjBFRlUZnpkAqzTJfkxEiH8qvqvdFf6Vmk55rd0
-    //http://localhost:8080/auth/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MX0.tBV0kjBFRlUZnpkAqzTJfkxEiH8qvqvdFf6Vmk55rd0
+    //https://playground.walisongosragen.com/auth/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MX0.r0JOc_nfhR-fZA-rBwH82fppMpqPh3tD6eMVAUWFpGU
+    //http://localhost:8080/auth/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MX0.r0JOc_nfhR-fZA-rBwH82fppMpqPh3tD6eMVAUWFpGU
     public function auth($jwt)
     {
         $decode = decode_jwt($jwt);

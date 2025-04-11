@@ -112,7 +112,7 @@
                                 <div style="font-size: 200px;margin-top:-50px"><?= $exp[1]; ?></div>
                                 <div class="<?= ($i['metode'] == "Available" ? "text-success" : ""); ?>" style="font-size: 60px;margin-top:-30px"><?= $i['metode']; ?></div>
                                 <div style="font-size: 50px;"><?= $i['waktu']; ?></div>
-                            </div>`;
+                            </div>
 
                             <?php if ($x % 5 == 0) : ?>
                             </div>
@@ -154,7 +154,7 @@
         let myModal = document.getElementById("content");
         let modal = bootstrap.Modal.getOrCreateInstance(myModal);
         modal.show();
-        let urutan = ['ps', 'iklan', "billiard"];
+        let urutan = ['ps', "billiard", 'ps', "billiard", "iklan"];
 
         let index = 0;
         let content = () => {
