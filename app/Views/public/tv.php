@@ -193,10 +193,12 @@
                     });
 
                     $(".modal_body_content").html(html);
+                    setTimeout(() => {
+                        let myModal = document.getElementById("content");
+                        let modal = bootstrap.Modal.getOrCreateInstance(myModal);
+                        modal.show();
 
-                    let myModal = document.getElementById("content");
-                    let modal = bootstrap.Modal.getOrCreateInstance(myModal);
-                    modal.show();
+                    }, 300);
 
                 })
             }
@@ -233,6 +235,9 @@
                 $(".fullscreen-bg").fadeOut();
             }
 
+            let myModal = document.getElementById("content");
+            let modal = bootstrap.Modal.getOrCreateInstance(myModal);
+            modal.show();
             modal.hide();
 
             content(order);
