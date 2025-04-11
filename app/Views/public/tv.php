@@ -157,11 +157,16 @@
         let urutan = ['ps', "billiard", 'ps', "billiard", "iklan"];
 
         let index = 0;
-        let content = () => {
-            index = (index + 1) % urutan.length; // Reset index jika mencapai akhir
-            if (urutan[index] !== "iklan") {
+        let content = (order) => {
+            if (index == (urutan.length - 1)) {
+                index = 0;
+            } else {
+                index++;
+            }
+            console.log("content: " + order);
+            if (order !== "iklan") {
                 post('landing/status_tv', {
-                    order: urutan[index]
+                    order
                 }).then(res => {
 
                     let x = 1;
@@ -220,15 +225,16 @@
 
 
         function loopInterval() {
-            modal.hide();
             let delay = (urutan[index] === "iklan") ? 5000 : 10000; // Atur waktu sesuai jenis konten
+            if (urutan[index] === 'iklan') {
+                $(".fullscreen-bg").fadeIn();
+            } else {
+                $(".fullscreen-bg").fadeOut();
+            }
 
-            // if (urutan[index] === 'iklan') {
-            //     $(".fullscreen-bg").fadeIn();
-            // } else {
-            //     $(".fullscreen-bg").fadeOut();
-            // }
-            content();
+            modal.hide();
+
+            content(urutan[index]);
             setTimeout(loopInterval, delay); // Jalankan ulang dengan waktu baru
         }
 
