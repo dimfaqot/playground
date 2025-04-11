@@ -156,10 +156,12 @@
         modal.show();
         let urutan = ['ps', 'iklan', "billiard"];
 
-        let content = (i) => {
-            if (urutan[i] !== "iklan") {
+        let index = 0;
+        let content = () => {
+            index = (index + 1) % urutan.length; // Reset index jika mencapai akhir
+            if (urutan[index] !== "iklan") {
                 post('landing/status_tv', {
-                    order: urutan[i]
+                    order: urutan[index]
                 }).then(res => {
 
                     let x = 1;
@@ -186,6 +188,9 @@
                     });
 
                     $(".modal_body_content").html(html);
+
+                    let myModal = document.getElementById("content");
+                    let modal = bootstrap.Modal.getOrCreateInstance(myModal);
                     modal.show();
 
                 })
@@ -212,22 +217,18 @@
 
 
         // let urutan = ['ps', 'iklan', 'billiard'];
-        let index = 0;
+
 
         function loopInterval() {
+            modal.hide();
             let delay = (urutan[index] === "iklan") ? 5000 : 10000; // Atur waktu sesuai jenis konten
 
-            if (urutan[index] === 'iklan') {
-                $(".fullscreen-bg").fadeIn();
-            } else {
-                $(".fullscreen-bg").fadeOut();
-            }
-
-            modal.hide();
-            content(index);
-
-            index = (index + 1) % urutan.length; // Reset index jika mencapai akhir
-
+            // if (urutan[index] === 'iklan') {
+            //     $(".fullscreen-bg").fadeIn();
+            // } else {
+            //     $(".fullscreen-bg").fadeOut();
+            // }
+            content();
             setTimeout(loopInterval, delay); // Jalankan ulang dengan waktu baru
         }
 

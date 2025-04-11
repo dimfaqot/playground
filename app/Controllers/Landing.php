@@ -27,6 +27,7 @@ class Landing extends BaseController
     }
 
 
+    //https://playground.walisongosragen.com/auth/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MX0.tBV0kjBFRlUZnpkAqzTJfkxEiH8qvqvdFf6Vmk55rd0
     //http://localhost:8080/auth/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MX0.tBV0kjBFRlUZnpkAqzTJfkxEiH8qvqvdFf6Vmk55rd0
     public function auth($jwt)
     {
