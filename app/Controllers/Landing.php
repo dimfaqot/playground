@@ -13,7 +13,7 @@ class Landing extends BaseController
     }
     public function index($grup = "Billiard-1", $uid = "c3144c15"): string
     {
-        dd(encode_jwt(['id' => 1]));
+        // dd(encode_jwt(['id' => 1]));
         // $db = db('billiard');
         // $q = $db->whereIn('perangkat', ['Meja 15', "Meja 24"])->get()->getResultArray();
         // foreach ($q as $i) {
