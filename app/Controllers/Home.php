@@ -391,7 +391,7 @@ class Home extends BaseController
             $message = count($q);
         }
 
-        if ($message !== 0) {
+        if ($message > 0) {
             $message = "Ada " . angka($message) . " pesanan masuk!.";
             sukses_js($message, "Kantin", base_url('home/kantin/notif'));
         }
@@ -406,7 +406,7 @@ class Home extends BaseController
             }
         }
 
-        if ($sos) {
+        if (!is_null($sos)) {
             sukses_js("Panggilan ke " . $sos['divisi'], "Sos", base_url('home/poin/notif'), $sos);
         }
 
@@ -422,7 +422,7 @@ class Home extends BaseController
             }
         }
 
-        if ($listrik) {
+        if (!is_null($listrik)) {
             sukses_js($listrik['petugas'] . " bersih-bersih dan mencatat listrik dengan poin: " . $listrik['poin'], "Listrik & Kebersihan", base_url('home/poin/notif'), $listrik);
         }
 
@@ -439,7 +439,7 @@ class Home extends BaseController
             }
         }
 
-        if ($notif) {
+        if (!is_null($notif)) {
             $admins = explode(",", $notif['notif']);
             if (!in_array(user()['id'], $admins)) {
                 $notif = $i;
