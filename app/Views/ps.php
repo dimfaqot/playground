@@ -82,13 +82,13 @@
                 <div style="width: 35%;">
                     <?php if ($i['status'] == 1): ?>
                         <?php if ($i['durasi'] == 0): ?>
-                            <button type="button" href="" class="bg-secondary opacity-50 btn btn-sm" style="font-size: medium;"><i class="fa-solid fa-ban"></i></button>
+                            <button type="button" href="" class="bg-warning opacity-50 btn btn-sm pindah_meja" data-id="<?= $i['id']; ?>" style="font-size: medium;"><i class="fa-solid fa-arrows-rotate"></i></button>
                         <?php else: ?>
                             <!-- jika waktu kurang 10 menit munculkan tombol tambah durasi -->
                             <?php if (round(($i['ke'] - time()) / 60) <= 10): ?>
                                 <button type="button" href="" class="bg-warning opacity-50 btn btn-sm tambah_durasi" data-id="<?= $i['id']; ?>" style="font-size: medium;"><i class="fa-solid fa-clock"></i></button>
                             <?php else: ?>
-                                <button type="button" href="" class="bg-secondary opacity-50 btn btn-sm" style="font-size: medium;"><i class="fa-solid fa-ban"></i></button>
+                                <button type="button" href="" class="bg-warning opacity-50 btn btn-sm pindah_meja" data-id="<?= $i['id']; ?>" style="font-size: medium;"><i class="fa-solid fa-arrows-rotate"></i></button>
                             <?php endif; ?>
                             <!-- jika tidak kosong -->
                         <?php endif; ?>
@@ -598,6 +598,47 @@
         } else {
             $(".main_content").hide();
         }
+
+    });
+    $(document).on('click', '.pindah_meja', function(e) {
+        e.preventDefault();
+        let id = $(this).data('id');
+        let perangkat = <?= json_encode($perangkat); ?>;
+
+        let html = `<div class="container">`
+        html += `<select class="form-control meja mb-4" style="font-size: 13px;">`;
+
+        perangkat.forEach(e => {
+            if (e.metode == "") {
+                html += `<option value="${e.perangkat}">${e.perangkat}</option>`;
+            }
+        })
+        html += `</select>
+        
+        <div class="d-grid">
+            <button class="btn btn-sm btn-success btn_pindah_meja" data-id="${id}"><i class="fa-solid fa-wallet"></i> PINDAH</button>
+        </div>
+        </div>`;
+        popupButton.html(html);
+    });
+    $(document).on('click', '.btn_pindah_meja', function(e) {
+        e.preventDefault();
+        let id = $(this).data('id');
+        let perangkat = $(".meja").val();
+
+        post("ps/pindah_meja", {
+            id,
+            perangkat
+        }).then(res => {
+
+            message(res.status, res.message);
+            if (res.status == "200") {
+                setTimeout(() => {
+                    location.reload();
+                }, 1200);
+            }
+
+        })
 
     });
 </script>

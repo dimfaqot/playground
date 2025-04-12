@@ -219,4 +219,29 @@ class Billiard extends BaseController
 
         sukses_js("Ok", $q);
     }
+    public function pindah_meja()
+    {
+        $id = clear($this->request->getVar('id'));
+        $perangkat = clear($this->request->getVar('perangkat'));
+
+        $db = db(menu()['tabel']);
+        $q = $db->where('perangkat', $perangkat)->whereIn('metode', ["Play", "Over"])->get()->getRowArray();
+        if ($q) {
+            gagal_js("Meja sudah digunakan...");
+        }
+
+        $q = $db->where('id', $id)->get()->getRowArray();
+        if (!$q) {
+            gagal_js("Id not found...");
+        }
+
+        $q['perangkat'] = $perangkat;
+        $db->where('id', $id);
+
+        if ($db->update($q)) {
+            sukses_js("Pindah meja sukses...");
+        } else {
+            sukses_js("Pindah meja gagal...");
+        }
+    }
 }

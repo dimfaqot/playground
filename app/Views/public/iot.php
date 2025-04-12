@@ -231,7 +231,7 @@
                             <input type="text" class="mb-2 form-control cari_user text-center" value="" placeholder="Nama pembeli">
                             <div class="data_list"></div>
                         </div>`;
-        if (val.ke == 0) {
+        if (val.ke == 0 || val.metode == "Over") {
             html += `<div class="text-center mb-3">
                                                 <span class="text_main" style="font-size: small;">Diskon</span>
                                                 <input type="text" class="mt-2 form-control diskon text-center angka" value="0" placeholder="Diskon">

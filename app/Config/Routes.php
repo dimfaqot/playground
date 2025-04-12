@@ -112,6 +112,7 @@ $routes->post('/billiard/akhiri', 'Billiard::akhiri');
 $routes->post('/billiard/users', 'Billiard::users');
 $routes->post('/billiard/transaksi', 'Billiard::transaksi');
 $routes->post('/billiard/lunas', 'Billiard::lunas');
+$routes->post('/billiard/pindah_meja', 'Billiard::pindah_meja');
 // options
 $routes->get('/ps', 'Ps::index');
 $routes->post('/ps/add', 'Ps::add');
@@ -120,6 +121,7 @@ $routes->post('/ps/akhiri', 'Ps::akhiri');
 $routes->post('/ps/users', 'Ps::users');
 $routes->post('/ps/transaksi', 'Ps::transaksi');
 $routes->post('/ps/lunas', 'Ps::Lunas');
+$routes->post('/ps/pindah_meja', 'Ps::pindah_meja');
 
 // statistik
 $routes->get('/statistik/(:any)/(:num)/(:any)', 'Statistik::index/$1/$2/$3');
