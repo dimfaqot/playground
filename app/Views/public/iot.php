@@ -230,12 +230,14 @@
                             <span class="text_main" style="font-size: small;">Pembeli</span>
                             <input type="text" class="mb-2 form-control cari_user text-center" value="" placeholder="Nama pembeli">
                             <div class="data_list"></div>
-                        </div>
-                        <div class="text-center mb-3">
-                            <span class="text_main" style="font-size: small;">Diskon</span>
-                            <input type="text" class="mt-2 form-control diskon text-center angka" value="0" placeholder="Diskon">
-                        </div>
-                        <div class="text-center mb-3">
+                        </div>`;
+        if (val.ke == 0) {
+            html += `<div class="text-center mb-3">
+                                                <span class="text_main" style="font-size: small;">Diskon</span>
+                                                <input type="text" class="mt-2 form-control diskon text-center angka" value="0" placeholder="Diskon">
+                                            </div>`;
+        }
+        html += `<div class="text-center mb-3">
                             <span class="text_main" style="font-size: small;">Uang Pembayaran</span>
                             <input type="text" class="mt-2 form-control uang_pembayaran text-center angka" value="${angka(val.total)}" placeholder="Uang pembayaran">
                         </div>
