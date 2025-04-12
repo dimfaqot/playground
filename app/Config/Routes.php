@@ -66,6 +66,7 @@ $routes->post('/user/add', 'User::add');
 $routes->post('/user/update', 'User::update');
 $routes->post('/user/update_db', 'User::update_db');
 $routes->post('/user/topup', 'User::topup');
+$routes->post('/user/update_hp', 'User::update_hp');
 
 // options
 $routes->get('/barang', 'Barang::index');

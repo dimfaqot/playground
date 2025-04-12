@@ -84,6 +84,7 @@ $dbs = [
                 <th class="text-center">#</th>
                 <th class="text-center">Nama</th>
                 <th class="text-center">Role</th>
+                <th class="text-center">Hp</th>
                 <?php if (user()['role'] == "Root"): ?>
                     <th class="text-center">Link</th>
                 <?php endif; ?>
@@ -96,6 +97,7 @@ $dbs = [
                     <th><?= $k + 1; ?></th>
                     <td><?= $i['nama']; ?></td>
                     <td><?= $i['role']; ?></td>
+                    <td contenteditable="true" class="text_center update_hp" data-id="<?= $i['id']; ?>"><?= $i['hp']; ?></td>
                     <?php if (user()['role'] == "Root"): ?>
                         <td class="text-center"><a role="button" class="copy_text link_main rounded py-1 px-2" data-text="<?= $i['link']; ?>" href=""><i class="fa-solid fa-link"></i> Link</a></td>
                         <td class="text-center"><a style="font-size: x-small;" href="" role="button" class="link_secondary topup px-2 py-1 rounded" data-id="<?= $i['id']; ?>">TOPUP</a> <a href="" role="button" class="text-danger fs-6 btn_confirm btn_confirm_<?= $i['id']; ?>" data-tabel="<?= menu()['tabel']; ?>" data-id="<?= $i['id']; ?>"><i class="fa-solid fa-trash-can"></i></a> <a role="button" class="text-warning fs-6 btn_update" data-id="<?= $i['id']; ?>" href=""><i class="fa-solid fa-square-pen"></i></a></td>
@@ -249,6 +251,18 @@ $dbs = [
             } else {
                 message("400", res.message);
             }
+        })
+    })
+    $(document).on("blur", ".update_hp", function(e) {
+        e.preventDefault();
+        let id = $(this).data("id");
+        let value = $(this).text();
+
+        post("user/update_hp", {
+            value,
+            id
+        }).then(res => {
+            message(res.status, res.message);
         })
     })
 </script>

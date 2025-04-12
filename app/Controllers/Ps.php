@@ -32,15 +32,17 @@ class Ps extends BaseController
             if ($i['status'] == 0) {
                 if ($i['metode'] == "Hutang") {
                     $data[] = $i;
+                    $total += (int)$i['total'];
+                    $hutang += (int)$i['total'];
                 } else {
                     if (date('d') == date('d', $i['tgl']) && date('m') == date('m', $i['tgl']) && date('Y') == date('Y', $i['tgl'])) {
                         $data[] = $i;
                         $total += (int)$i['total'];
-                        $hutang += (int)$i['total'];
                     }
                 }
             }
         }
+
 
         return view(menu()['controller'], ['judul' => menu()['menu'], 'perangkat' => $perangkat, 'data' => $data, 'total' => $total, 'hutang' => $hutang]);
     }

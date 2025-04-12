@@ -71,11 +71,11 @@ class User extends BaseController
 
         $dbx = \Config\Database::connect();
         $db = $dbx->table('user');
-        if ($db->where('nama', $nama)->where('role', $role)->get()->getRowArray()) {
+        if ($db->where('nama', $nama)->get()->getRowArray()) {
             gagal(base_url(menu()['controller']), "Nama sudah ada!.");
         }
-        if ($db->where('hp', $hp)->where('role', $role)->get()->getRowArray()) {
-            gagal(base_url(menu()['controller']), "Nama sudah ada!.");
+        if ($db->where('hp', $hp)->get()->getRowArray()) {
+            gagal(base_url(menu()['controller']), "Hp sudah ada!.");
         }
 
         $data = [
@@ -117,10 +117,10 @@ class User extends BaseController
             gagal(base_url(menu()['controller']), "Id tidak ditemukan!.");
         }
 
-        if ($db->whereNotIn('id', [$id])->where('nama', $nama)->where('role', $role)->get()->getRowArray()) {
+        if ($db->whereNotIn('id', [$id])->where('nama', $nama)->get()->getRowArray()) {
             gagal(base_url(menu()['controller']), "Nama sudah ada!.");
         }
-        if ($db->whereNotIn('id', [$id])->where('hp', $hp)->where('role', $role)->get()->getRowArray()) {
+        if ($db->whereNotIn('id', [$id])->where('hp', $hp)->get()->getRowArray()) {
             gagal(base_url(menu()['controller']), "Hp sudah ada!.");
         }
 
@@ -190,6 +190,39 @@ class User extends BaseController
         }
 
         $fun->topup($q, $jml_topup, "Topup", "Web", $lokasi);
+    }
+    public function update_hp()
+    {
+
+
+        $id = clear($this->request->getVar('id'));
+        $value = clear($this->request->getVar('value'));
+
+
+
+        $db = db(menu()['tabel']);
+        $q = $db->where('id', $id)->get()->getRowArray();
+
+        if (!$q) {
+            gagal(base_url(menu()['controller']), "Id tidak ditemukan!.");
+        }
+
+        if ($db->whereNotIn('id', [$id])->where('nama', $q['nama'])->get()->getRowArray()) {
+            gagal_js("Nama sudah ada!.");
+        }
+
+        if ($db->whereNotIn('id', [$id])->where('hp', $value)->get()->getRowArray()) {
+            gagal_js("Hp sudah ada!.");
+        }
+
+        $q['hp'] = $value;
+
+        $db->where('id', $id);
+        if ($db->update($q)) {
+            sukses_js("Sukses...");
+        } else {
+            gagal_js("Gagal...");
+        }
     }
 
     public function update_db()

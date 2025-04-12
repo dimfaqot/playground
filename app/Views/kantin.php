@@ -417,7 +417,8 @@
         e.preventDefault();
         let total = parseInt(str_replace(".", "", $(".total").text()));
         let html = '';
-        html += `<div class="container"><div class="text-center mb-3">
+        html += `<div class="container">
+                        <div class="text-center mb-3">
                             <span class="text_main" style="font-size: small;">TOTAL</span>
                             <div data-total="${total}" class="fw-bold total_pembayaran">${angka(total)}</div>
                         </div>`;
@@ -433,8 +434,8 @@
                             <span class="text_main" style="font-size: 12px;">Uang Pembayaran</span>
                             <input type="text" class="mt-2 form-control form-control-sm uang_pembayaran text-center angka" value="${angka(total)}" placeholder="Uang pembayaran">
                         </div>`;
-        html += '</div>';
         html += tabel("btn_transaksi");
+        html += '</div>';
         popupButton.html(html);
         setTimeout(() => {
             $(".cari_user").focus();
