@@ -481,6 +481,8 @@
                 if (val.durasi == 0) {
                     val['durasi'] = res.data.durasi
                     val['total'] = res.data.harga
+                } else {
+                    val['total'] = res.data.harga
                 }
 
                 pembayaran(val);
