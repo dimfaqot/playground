@@ -483,6 +483,7 @@
                     val['total'] = res.data.harga
                 } else {
                     val['total'] = res.data.harga
+                    val['waktu'] = "0" + (parseInt(res.data.durasi) / 60) + " Jam : 00 Menit";
                 }
 
                 pembayaran(val);
