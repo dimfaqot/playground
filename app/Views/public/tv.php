@@ -81,7 +81,7 @@
 <body class="bg-dark">
 
     <div class="running-text-container">
-        <span class="running-text">JAM BUKA: SENIN - SABTU 13:00 - 04:00 | MINGGU 09:00 - 04:00</span>
+        <span class="running-text"><?= settings('Running Text Tv'); ?></span>
     </div>
     <div class="body_iklan" style="display: none;"></div>
 
