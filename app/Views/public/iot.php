@@ -63,6 +63,7 @@
 <script>
     let divisions = <?= json_encode(options('Divisi')); ?>;
     let perangkats = <?= json_encode($data['perangkat']); ?>;
+    let rentals = <?= json_encode($data['rental']); ?>;
     let div = "<?= $divisi; ?>";
     let judul = "<?= $judul; ?>";
     let user_tap = {};
@@ -186,9 +187,9 @@
         const duration = setInterval(looping, 1000);
     }
 
-    const update_status_perangkat = (data) => {
+    const update_status_rentals = () => {
         let html = "";
-        data.forEach(e => {
+        rentals.forEach(e => {
             let exp = e.perangkat.split(" ");
             html += `<div class="col-3">
                         <div data-id="${e.id}" data-harga="${e.harga}" data-perangkat="${e.perangkat}" class="border rounded-circle ${(e.status== 1 ? "bg-secondary opacity-75 border-light btn_pembayaran" : (e.metode == "Over" ? "bg-danger opacity-50 border-danger btn_pembayaran" :  "border-warning btn_rental"))}" style="padding:7px 0px;font-size:x-small">
@@ -271,8 +272,9 @@
         }).then(res => {
             if (res.data) {
                 perangkats = res.data.perangkat;
+                rentals = res.data.rental;
 
-                update_status_perangkat(res.data.rental);
+                update_status_rentals();
             }
 
             data_tapping = res.data3;
@@ -440,7 +442,7 @@
         e.preventDefault();
         let id = $(this).data("id");
         let val = {};
-        perangkats.forEach(e => {
+        rentals.forEach(e => {
             if (e.id == id) {
                 val = e;
                 data_transaksi = e;
@@ -489,7 +491,7 @@
         e.preventDefault();
         let id = $(this).data("id");
         let val = {};
-        perangkats.forEach(e => {
+        rentals.forEach(e => {
             if (e.id == id) {
                 val = e;
                 data_transaksi = e;
