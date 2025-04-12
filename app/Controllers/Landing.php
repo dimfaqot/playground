@@ -75,8 +75,10 @@ class Landing extends BaseController
     public function tv()
     {
         $fun = new \App\Models\IotModel();
-
-        return view('public/tv', ['judul' => "HAYU PLAYGROUND", 'data' => $fun->tv()]);
+        $set = explode(":", settings("Tv"));
+        $settings = ['urutan' => explode(",", $set[0]), 'interval' => explode(",", $set[1])];
+        // dd($settings);
+        return view('public/tv', ['judul' => "HAYU PLAYGROUND", 'data' => $fun->tv(), 'settings' => $settings]);
     }
     public function status_tv()
     {

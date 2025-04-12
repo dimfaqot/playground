@@ -127,6 +127,7 @@
     </div>
 
     <script>
+        let settings = <?= json_encode($settings); ?>;
         $(document).ready(function() {
             $('.running-text').each(function(index) {
                 let delay = index * 2000; // Delay setiap teks 2 detik
@@ -145,7 +146,7 @@
         let myModal = document.getElementById("content");
         let modal = bootstrap.Modal.getOrCreateInstance(myModal);
         modal.show();
-        let urutan = ['ps', "iklan", 'billiard', "iklan", "ps"];
+        let urutan = settings['urutan'];
         let index = 0;
         let content = (order) => {
             let timestamp = new Date().getTime();
@@ -225,12 +226,10 @@
 
         // let urutan = ['ps', 'iklan', 'billiard'];
 
-
-
         function loopInterval() {
             modal.hide();
             let order = urutan[index];
-            let delay = (order === "iklan") ? 10000 : 3000; // Atur waktu sesuai jenis konten
+            let delay = (order === "iklan") ? parseInt(settings['interval'][0]) : parseInt(settings['interval'][1]); // Atur waktu sesuai jenis konten
             // if (order === 'iklan') {
             //     $(".fullscreen-bg").fadeIn();
             //     setTimeout(() => {
