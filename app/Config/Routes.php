@@ -9,7 +9,7 @@ use CodeIgniter\Router\RouteCollection;
 $routes->get('/auth/(:any)', 'Landing::auth/$1');
 $routes->get('/iot/fqt/085175006585/(:any)', 'Iot::grup_iot/$1');
 $routes->get('/', 'Landing::index');
-$routes->get('/(:any)/(:any)', 'Landing::index/$1/$2');
+// $routes->get('/(:any)/(:any)', 'Landing::index/$1/$2');
 $routes->post('/landing/cek_user', 'Landing::cek_user');
 $routes->post('/landing/encode_jwt', 'Landing::encode_jwt');
 $routes->get('/tv', 'Landing::tv');

@@ -4,9 +4,7 @@
 
 <h6><i class="<?= menu()['icon']; ?>"></i> <?= strtoupper(menu()['menu']); ?></h6>
 <button data-bs-toggle="modal" data-bs-target="#modal_add" class="btn btn-sm btn-light my-3"><i class="fa-solid fa-circle-plus"></i> Tambah Data</b></button>
-<form action="<?= base_url(menu()['controller']); ?>/cek" method="post">
-    <button type="submit" class="btn btn-sm btn-light my-3">Cek</b></button>
-</form>
+
 
 <!-- Modal -->
 <div class="modal fade" id="modal_add" tabindex="-1" aria-labelledby="fullscreenLabel" aria-hidden="true">
