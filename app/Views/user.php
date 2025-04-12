@@ -15,16 +15,17 @@ $dbs = [
 ]
 ?>
 <h6 style="color: <?= tema('link_secondary'); ?>;"><i class="<?= menu()['icon']; ?>"></i> <?= strtoupper(menu()['menu']); ?></h6>
+<?php if (user()['role'] == "Root"): ?>
+    <form action="<?= base_url(menu()['controller']); ?>/update_db" method="post">
+        <select class="form-select form-select-sm" name="tabel">
+            <?php foreach ($dbs as $i): ?>
+                <option value="<?= $i['tabel']; ?>"><?= $i['text']; ?></option>
+            <?php endforeach; ?>
+        </select>
 
-<form action="<?= base_url(menu()['controller']); ?>/update_db" method="post">
-    <select class="form-select form-select-sm" name="tabel">
-        <?php foreach ($dbs as $i): ?>
-            <option value="<?= $i['tabel']; ?>"><?= $i['text']; ?></option>
-        <?php endforeach; ?>
-    </select>
-
-    <button type="submit" class="btn btn-sm btn-danger">Update</button>
-</form>
+        <button type="submit" class="btn btn-sm btn-danger">Update</button>
+    </form>
+<?php endif; ?>
 <button data-bs-toggle="modal" data-bs-target="#modal_add" class="btn btn-sm link_secondary my-3 add_data"><i class="fa-solid fa-circle-plus"></i> Tambah Data</b></button>
 
 <!-- Modal -->
