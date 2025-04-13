@@ -362,7 +362,7 @@
 
         return html;
     }
-    let data_bisyaroh = (data, data2, data3) => {
+    let data_bisyaroh = (data, data2, data3, data4, data5) => {
 
         let html = '';
 
@@ -390,36 +390,34 @@
                             <thead>
                                 <tr>
                                     <th class="text-center">#</th>
+                                    <th class="text-center">Nama</th>
                                     <th class="text-center">Kategori</th>
-                                    <th class="text-center">Menit</th>
-                                    <th class="text-center">Jam</th>
+                                    <th class="text-center">Transaksi</th>
                                     <th class="text-center">Jml</th>
                                 </tr>
                             </thead>
                             <tbody class="tabel_search">`;
 
-        html += `<tr>
-                    <td class="text-center">1</td>
-                    <td>Billiard</td>
-                    <td class="text-end">${angka(data.billiard.minutes)}</td>
-                    <td class="text-end">${angka(data.billiard.hours)}</td>
-                    <td class="text-end">${angka(data.billiard.total)}</td>
-                    </tr>
-                    
-                    <tr>
-                    <td class="text-center">2</td>
-                    <td>Ps</td>
-                    <td class="text-end">${angka(data.ps.minutes)}</td>
-                    <td class="text-end">${angka(data.ps.hours)}</td>
-                    <td class="text-end">${angka(data.ps.total)}</td>
-                    </tr>
-                    
-                    <tr>
-                    <th class="text-center" colspan="2">TOTAL</th>
-                    <th class="text-end">${angka(data.ps.minutes+data.billiard.minutes)}</th>
-                    <th class="text-end">${angka(data.ps.hours + data.billiard.hours)}</th>
-                    <th class="text-end">${angka(data.ps.total +data.billiard.total)}</th>
-                    </tr>`;
+        data4.forEach(el => {
+            data5.forEach((e, i) => {
+
+                html += `<tr>
+                        <td class="text-center">${(i+1)}</td>
+                        <td>${el.nama}</td>
+                        <td>${e.toUpperCase()}</td>
+                        <td class="text-end">${angka(data.data[el.id].data[e].transaksi)}</td>
+                        <td class="text-end">${angka(data.data[el.id].data[e].total)}</td>
+                        </tr>`;
+
+
+            })
+            html += `<tr>
+                        <th class="text-center" colspan="3">TOTAL</th>
+                        <th class="text-end">${angka(data.data[el.id].transaksi)}</th>
+                        <th class="text-end">${angka(data.data[el.id].total)}</th>
+                        </tr>`;
+
+        })
 
         html += `</tbody>
                             </table>`;
@@ -467,7 +465,7 @@
                 }
                 if (order == "bisyaroh") {
                     let html = `<div class="container body_bisyaroh">`;
-                    html += data_bisyaroh(res.data, res.data2, res.data3);
+                    html += data_bisyaroh(res.data, res.data2, res.data3, res.data4, res.data5);
                     html += '</div>';
                     popupButton.html(html);
                 }
@@ -496,7 +494,7 @@
             bulan
         }).then(res => {
             if (res.status == "200") {
-                $(".body_bisyaroh").html(data_bisyaroh(res.data, res.data2, res.data3));
+                $(".body_bisyaroh").html(data_bisyaroh(res.data, res.data2, res.data3, res.data4, res.data5));
             }
         })
     })

@@ -572,40 +572,71 @@ class Home extends BaseController
         }
 
         if ($order == "bisyaroh") {
-            $bisy_billiard = 1000;
-            $data = ['billiard', 'ps'];
-            $user = $dbu->where('role', 'Billiard')->get()->getRowArray();
-
+            $bisy_billiard = (int)settings('Bisyaroh');
+            $datas = ['billiard', 'ps', 'kantin'];
+            $user = $dbu->whereNotIn('role', ['Member'])->get()->getResultArray();
             $res = [];
-            foreach ($data as $i) {
-                $db = db($i);
-                $q = $db->where('petugas', $user['nama'])->whereNotIn('metode', ['Hutang', 'Play', 'Over'])->whereNotIn('total', [0])->get()->getResultArray();
-                $data = [];
-                $minutes = 0;
-                $total = 0;
-                foreach ($q as $b) {
-                    if ($bulan == date('m', $b['tgl']) && date('Y', $b['tgl']) == $tahun) {
-                        if ($i == "billiard" && $b['total'] > 15000) {
-                            $minutes += (int)$b['durasi'];
-                            $data[] = $b;
+            $all_total = 0;
+            $all_transaksi = 0;
+
+            foreach ($user as $u) {
+                $temp_data = [];
+                $temp_transaksi = 0;
+                $temp_total = 0;
+                foreach ($datas as $i) {
+                    $db = db($i);
+                    if ($i == 'ps' || $i == 'billiard') {
+                        $q = $db->where('petugas', $u['nama'])->whereNotIn('metode', ['Hutang', 'Play', 'Over'])->whereNotIn('total', [0])->get()->getResultArray();
+                        $total = 0;
+                        $temp_minutes = 0;
+                        $data = [];
+                        foreach ($q as $b) {
+                            if ($bulan == date('m', $b['tgl']) && date('Y', $b['tgl']) == $tahun) {
+                                if ($i == "billiard" && $b['total'] > 15000) {
+                                    $temp_minutes += (int)$b['durasi'];
+                                    $data[] = $b;
+                                }
+                                if ($i == "ps" && $b['total'] > 3000) {
+                                    $temp_minutes += (int)$b['durasi'];
+                                    $data[] = $b;
+                                }
+                            }
                         }
-                        if ($i == "ps" && $b['total'] > 3000) {
-                            $minutes += (int)$b['durasi'];
-                            $data[] = $b;
+                        $transaksi = floor($temp_minutes / 60);
+                        if ($i == "billiard") {
+                            $total += $bisy_billiard * (int)$transaksi;
                         }
+                        if ($i == "ps") {
+                            $total += round($bisy_billiard / 2) * (int)$transaksi;
+                        }
+                        $temp_total += $total;
+                        $temp_transaksi += $transaksi;
+                        $temp_data[$i] = ['transaksi' => $transaksi, 'total' => $total, 'data' => $data];
+                    } else {
+                        $data = [];
+                        $q = $db->where('petugas', $u['nama'])->whereNotIn('metode', ['Hutang'])->whereNotIn('total', [0])->get()->getResultArray();
+                        foreach ($q as $b) {
+                            if ($bulan == date('m', $b['tgl']) && date('Y', $b['tgl']) == $tahun) {
+                                if ($b['total'] > 3000) {
+                                    $data[] = $b;
+                                }
+                            }
+                        }
+
+                        $temp_transaksi += count($data);
+                        $total = (count($data) * $bisy_billiard);
+                        $temp_total += $total;
+                        $temp_data[$i] = ['transaksi' => count($data), 'total' => $total, 'data' => $data];
                     }
                 }
-                $hours = floor($minutes / 60);
-                if ($i == "billiard") {
-                    $total += $bisy_billiard * (int)$hours;
-                }
-                if ($i == "ps") {
-                    $total += round($bisy_billiard / 2) * (int)$hours;
-                }
+                $all_transaksi += $temp_transaksi;
+                $all_total += $temp_total;
 
-                $res[$i] = ['minutes' => $minutes, "hours" => $hours, 'total' => $total, 'data' => $data];
+                $res[$u['id']] = ['nama' => $u['nama'], 'transaksi' => $temp_transaksi, 'total' => $temp_total, 'data' => $temp_data];
             }
-            sukses_js("Sukses", $res, $bulan, $tahun);
+
+            $respon = ['transaksi' => $all_transaksi, 'total' => $all_total, 'data' => $res];
+            sukses_js("Sukses", $respon, $bulan, $tahun, $user, $datas);
         }
     }
     public function update_header()
