@@ -60,6 +60,11 @@ $routes->get('/options', 'Options::index');
 $routes->post('/options/add', 'Options::add');
 $routes->post('/options/update', 'Options::update');
 
+// settings
+$routes->get('/settings', 'Settings::index');
+$routes->post('/settings/add', 'Settings::add');
+$routes->post('/settings/update', 'Settings::update');
+
 // options
 $routes->get('/user', 'User::index');
 $routes->post('/user/add', 'User::add');
