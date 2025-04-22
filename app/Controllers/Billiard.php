@@ -57,8 +57,10 @@ class Billiard extends BaseController
         }
         $dari = time();
         $ke = 0;
+        $total = 0;
         if ($durasi > 0) {
             $ke += $dari + ((60 * 60) * $durasi);
+            $total = (int)$harga * (int)$durasi;
         }
 
         $db = db(menu()['tabel']);
@@ -69,6 +71,7 @@ class Billiard extends BaseController
             'ke' => $ke,
             'status' => 0,
             'harga' => $harga,
+            'total' => $total,
             'durasi' => $durasi * 60,
             'pembeli' => user()['nama'],
             'user_id' => user()['id'],

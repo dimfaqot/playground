@@ -455,6 +455,10 @@ class FunModel extends Model
             $res = (int)openssl_decrypt($decoded, $method, $key, 0, $iv);
         }
 
+        if (is_null($res)) {
+            gagal_js('Dekrip fulus gagal...');
+        }
+
         return $res;
     }
 
@@ -663,5 +667,68 @@ class FunModel extends Model
         }
         $res = ['total' => $total, 'data' => $data];
         return $res;
+    }
+
+    function update_saldo($user, $total_transaksi, $kategori, $lokasi, $petugas, $metode, $no_nota = '')
+    {
+        $saldo = $this->dekripsi_fulus($user, $user['fulus']); //saldo saat ini
+        $saldo_akhir = (int)$saldo - (int)$total_transaksi;
+        $dbu = db('user');
+        $user['fulus'] = $this->enkripsi_fulus($user, $saldo_akhir);
+
+        $dbu->where('id', $user['id']);
+        if (!$dbu->update($user)) {
+            gagal_js("Update saldo gagal...");
+        }
+
+        $db_tap = db('tap');
+        $data = [
+            'tgl' => time(),
+            'kategori' => $kategori,
+            'lokasi' => $lokasi,
+            'user' => $user['nama'],
+            'saldo' => $saldo, //saldo saat ini
+            'uang' => $total_transaksi, //jml transaksi
+            'total' => $saldo_akhir, //saldo setelah dikurangi transaksi
+            'petugas' => $petugas,
+            'metode' => $metode,
+            'no_nota' => $no_nota
+
+        ];
+
+        if (!$db_tap->insert($data)) {
+            gagal_js('Data gagal dimasukkan ke tabel tap...');
+        }
+
+        return $saldo_akhir;
+    }
+
+    function data_hari_ini()
+    {
+        $hari_ini = time_hari_ini();
+        $data = [];
+        foreach (options('Divisi') as $d) {
+            $db = db(strtolower($d['value']));
+            $data_hutang = $db->where('tgl >=', $hari_ini['start'])->where('tgl <=', $hari_ini['end'])->where('metode', 'Hutang')->orderBy('tgl', 'DESC')->get()->getResultArray();
+            $data_masuk = $db->where('tgl >=', $hari_ini['start'])->where('tgl <=', $hari_ini['end'])->whereNotIn('metode', ['Hutang', 'Over', 'Play'])->orderBy('tgl', 'DESC')->get()->getResultArray();
+
+            $masuk = 0;
+            $hutang = 0;
+
+            foreach ($data_masuk as $m) {
+                $masuk += (int)$m['total'];
+            }
+
+            foreach ($data_hutang as $h) {
+                $hutang += (int)$h['total'];
+            }
+
+            $data[$d['value']] = [
+                'masuk' => ['total' => $masuk, 'data' => $data_masuk],
+                'hutang' => ['total' => $hutang, 'data' => $data_hutang]
+            ];
+        }
+
+        return $data;
     }
 }

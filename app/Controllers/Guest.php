@@ -6,6 +6,7 @@ class Guest extends BaseController
 {
     public function nota($jwt)
     {
+
         $decode = decode_jwt($jwt);
 
         $db = db($decode['tabel']);

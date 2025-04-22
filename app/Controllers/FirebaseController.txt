@@ -1,0 +1,163 @@
+<?php
+
+namespace App\Controllers;
+
+use App\Models\FirebaseTokenModel;
+// use App\Libraries\FirebaseMessaging;
+use CodeIgniter\API\ResponseTrait;
+use Minishlink\WebPush\Subscription;
+use Minishlink\WebPush\WebPush;
+use Minishlink\WebPush\VAPID;
+use Base64Url\Base64Url;
+use Jose\Component\KeyManagement\JWKFactory;
+
+
+
+
+
+class FirebaseController extends BaseController
+{
+    use ResponseTrait;
+
+    protected $tokenModel;
+
+    public function __construct()
+    {
+        $this->tokenModel = new FirebaseTokenModel();
+    }
+
+    public function index()
+    {
+        $jwk = JWKFactory::createECKey('P-256');
+
+        $privateKey = $jwk->get('d');
+        $publicKey = $jwk->get('x') . $jwk->get('y');
+
+        echo "Private Key: $privateKey\n";
+        echo "Public Key: $publicKey\n";
+
+        // $keys = VAPID::createVapidKeys();
+        // print_r($keys);
+
+
+        // $keys = VAPID::createVapidKeys();
+        // dd($keys);
+        // return $this->response->setJSON([
+        //     'publicKey' => $keys['publicKey'],
+        //     'privateKey' => $keys['privateKey'],
+        // ]);
+
+
+        return view("notif", ['Judul' => "Notif"]);
+    }
+
+    public function saveToken()
+    {
+        $data = $this->request->getJSON(true);
+        $db = db('firebase_tokens');
+        if ($data && isset($data['subscription'])) {
+            $subscription = $data['subscription'];
+            $endpoint = $subscription['endpoint'];
+            $publicKey = $subscription['keys']['p256dh'] ?? null;
+            $authToken = $subscription['keys']['auth'] ?? null;
+            $userId = 1; // Contoh mengaitkan langganan dengan user
+
+            // Periksa apakah endpoint sudah ada untuk user ini
+            $existingSubscription = $this->tokenModel->where('user_id', $userId)
+                ->where('endpoint', $endpoint)
+                ->first();
+
+            if ($existingSubscription) {
+                return $this->respondUpdated(['message' => 'Subscription updated.']);
+            } else {
+                $data = [
+                    'user_id' => $userId,
+                    'endpoint' => $endpoint,
+                    'public_key' => $publicKey,
+                    'fcm_token' => $authToken,
+                ];
+
+                if ($db->insert($data)) {
+                    sukses_js("Sukses");
+                } else {
+                    gagal_js("Gagal");
+                }
+            }
+        } else {
+            return $this->failValidationErrors('Invalid subscription data.');
+        }
+    }
+
+    public function sendPushNotification()
+    {
+        $title = $this->request->getPost('title');
+        $body = $this->request->getPost('body');
+        $url = $this->request->getPost('url');
+
+        // *** PENDEKATAN TANPA MODEL (TIDAK DISARANKAN UNTUK PRODUKSI) ***
+        // Asumsi data langganan disimpan dalam session dengan key 'push_subscriptions'
+        $db = db('firebase_tokens');
+        $q = $db->get()->getResultArray();
+        $subscriptionsData = session()->get('push_subscriptions') ?? [];
+
+        if ($q) {
+            $subscriptionsData = $q;
+        }
+        $publicKey = file_get_contents('vapid_public.txt');
+        $decodedKey = base64_decode($publicKey);
+        echo "Public Key Length: " . strlen($decodedKey);
+
+
+        $publicKeyPem = "BFjnqZmT76I1AliNOojKyIsMUo6fNJhriBI4odCvFeh4MtwDBHC4SkuXjOLNDWhyCL6rChZz3Z+D1+PNI9iVOdM=";
+        $publicKeyFixed = Base64Url::encode(base64_decode($publicKeyPem));
+        dd(strlen($publicKeyFixed));
+        $privateKeyPem = "MtwDBHC4SkuXjOLNDWhyCL6rChZz3Z+D1+PNI9iVOdM=";
+        $privateKeyFixed = Base64Url::encode(base64_decode($privateKeyPem));
+
+        $auth = [
+            'VAPID' => [
+                'subject' => 'mailto:your@email.com', // Ganti dengan email Anda
+                'publicKey' => $publicKeyFixed,
+                'privateKey' => $privateKeyFixed,
+            ],
+        ];
+
+
+        $webPush = new WebPush($auth);
+        $notificationsSent = 0;
+
+        foreach ($subscriptionsData as $subscriptionDatum) {
+            try {
+                $subscription = Subscription::create([
+                    'endpoint' => $subscriptionDatum['endpoint'],
+                    'publicKey' => $subscriptionDatum['public_key'],
+                    'authToken' => $subscriptionDatum['auth_token'],
+                ]);
+
+                $payload = json_encode([
+                    'title' => $title,
+                    'body' => $body,
+                    'url' => $url,
+                ]);
+
+                $webPush->sendNotification($subscription, $payload);
+                $notificationsSent++;
+            } catch (\Minishlink\WebPush\SubscriptionExpired $e) {
+                // Jika menggunakan session, Anda mungkin perlu cara lain untuk menandai atau menghapus langganan kadaluarsa
+                log_message('info', "Subscription expired (session): {$subscriptionDatum['endpoint']}");
+                // Contoh: Anda bisa menghapus langganan ini dari session di sini jika diperlukan
+                // $updatedSubscriptions = array_filter($subscriptionsData, fn($sub) => $sub['endpoint'] !== $subscriptionDatum['endpoint']);
+                // session()->set('push_subscriptions', $updatedSubscriptions);
+            } catch (\Exception $e) {
+                log_message('error', "Error sending push notification (session) to {$subscriptionDatum['endpoint']}: {$e->getMessage()}");
+            }
+        }
+
+        $report = $webPush->flush();
+
+        return $this->respond([
+            'message' => "{$notificationsSent} notifications sent (from session).",
+            'report' => $report,
+        ]);
+    }
+}

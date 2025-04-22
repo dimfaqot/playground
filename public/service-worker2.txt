@@ -1,0 +1,8 @@
+// service-worker.js
+console.log('Service Worker file loaded');
+try {
+    importScripts('https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js');
+    console.log('Firebase App imported successfully');
+} catch (error) {
+    console.error('Failed to importScripts:', error);
+}

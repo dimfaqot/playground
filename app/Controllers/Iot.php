@@ -17,6 +17,8 @@ class Iot extends BaseController
         //     $db->where('id', $i['id']);
         //     $db->update($i);
         // }
+
+
         $fun = new IotModel();
         $data = $fun->all_perangkat($grup);
 
@@ -848,4 +850,113 @@ class Iot extends BaseController
 
         sukses_js('Sukses', $perangkat, $absen, $pembayaran);
     }
+    public function perangkat()
+    {
+        $jwt = clear($this->request->getVar('jwt'));
+        $decode = decode_jwt($jwt);
+
+        // url yang diakses esp untuk mengecek apakah perangkat status 1 untuk nyala dan 0 untuk mati
+        $db = db('perangkat');
+        $q_perangkat = $db->where('lokasi_esp', $decode['data'])->get()->getResultArray();
+
+        foreach ($q_perangkat as $i) {
+            $val = ['pin' => $i['pin'], 'status' => $i['status']];
+            if ($i['kategori'] == "Ps" || $i['kategori'] == "Billiard") {
+                $dbp = db(strtolower($i['kategori']));
+                $q = $dbp->where('perangkat', $i['perangkat'])->where('status', 1)->get()->getRowArray();
+                if ($q) {
+                    $val['status'] = $q['status'];
+                }
+            }
+
+            $perangkat[] = $val;
+        }
+
+        sukses_js('Sukses', $perangkat);
+    }
+
+
+    // kantin barber
+
+    // public function cari_barang()
+    // {
+    //     $value = clear($this->request->getVar('value'));
+    //     $kategori = clear($this->request->getVar('kategori'));
+    //     $db = db('barang');
+    //     $q = $db->whereIn('kategori', [$kategori])->like('barang', $value, 'both')->orderBy('barang', 'ASC')->limit(8)->get()->getResultArray();
+
+    //     sukses_js("Sukses", $q);
+    // }
+    // public function transaction()
+    // {
+    //     $data = json_decode(json_encode($this->request->getVar("data_transaksi")), true);
+    //     $pembeli = json_decode(json_encode($this->request->getVar("pembeli")), true);
+    //     $metode = upper_first(clear($this->request->getVar("metode")));
+    //     $uang_pembayaran = rp_to_int(clear($this->request->getVar("uang_pembayaran")));
+    //     $total = rp_to_int(clear($this->request->getVar("total")));
+    //     $no_nota = clear($this->request->getVar("no_nota"));
+
+    //     $db = db(menu()['tabel']);
+    //     if ($uang_pembayaran < $total) {
+    //         gagal_js("Uang kurang!.");
+    //     }
+    //     $nota_exist = $db->where('no_nota', $no_nota)->get()->getResultArray();
+
+    //     if ($nota_exist) {
+    //         $total2 = 0;
+    //         $err = [];
+    //         foreach ($data as $i) {
+    //             $i['metode'] = $metode;
+    //             $i['petugas'] = user()['nama'];
+
+    //             $db->where('id', $i['id']);
+    //             if ($db->update($i)) {
+    //                 $total2 += (int)$i['total'];
+    //             } else {
+    //                 $err[] = $i['barang'];
+    //             }
+    //         }
+
+    //         $jwt = base_url("guest/nota/") . encode_jwt(['tabel' => menu()['tabel'], 'no_nota' => $no_nota]);
+    //         sukses_js("Transaksi sukses.", ($uang_pembayaran - $total2), $err, $jwt);
+    //     } else {
+    //         $dbb = db("barang");
+    //         $total2 = 0;
+    //         $err = [];
+    //         foreach ($data as $i) {
+    //             unset($i["id"]);
+
+    //             $i['tgl'] = time();
+    //             $i['no_nota'] = $no_nota;
+    //             $i['metode'] = $metode;
+    //             $i['pembeli'] = $pembeli['nama'];
+    //             $i['user_id'] = $pembeli['user_id'];
+    //             $i['petugas'] = user()['nama'];
+
+    //             if ($db->insert($i)) {
+    //                 $total2 += (int)$i['total'];
+    //                 $q = $dbb->where('kategori', menu()['menu'])->where('barang', $i['barang'])->get()->getRowArray();
+    //                 if ($q) {
+    //                     $q['qty'] -= (int)$i['qty'];
+    //                     $dbb->where('id', $q['id']);
+    //                     $dbb->update($q);
+    //                 }
+    //             } else {
+    //                 $err[] = $i['barang'];
+    //             }
+    //         }
+    //         $jwt = base_url("guest/nota/") . encode_jwt(['tabel' => menu()['tabel'], 'no_nota' => $no_nota]);
+    //         sukses_js("Transaksi sukses.", ($uang_pembayaran - $total2), $err, $jwt);
+    //     }
+    // }
+
+    // public function cek_absen_kantin()
+    // {
+    //     $sesi = clear($this->request->getVar('status_absen'));
+    //     $db = db('iot');
+    //     $q = $db->where('kategori', 'Absen')->where('status', 'Tap')->where('grup', "Kantin 1")->get()->getRowArray();
+
+    //     $sesi = ($q ? "Tap" : "Over");
+    //     sukses_js("Sukses", $sesi);
+    // }
 }

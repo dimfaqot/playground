@@ -517,3 +517,26 @@ function sisa_jam($endTime)
     // Format hasil
     return "{$hours} Jam : {$minutes} Menit";
 }
+
+function time_hari_ini()
+{
+    $currentHour = date("H"); // Ambil jam saat ini
+    $currentDate = date("Y-m-d"); // Ambil tanggal saat ini
+    $yesterdayDate = date("Y-m-d", strtotime("-1 day")); // Ambil tanggal kemarin
+    $tomorrowDate = date("Y-m-d", strtotime("+1 day")); // Ambil tanggal besok
+
+    if ($currentHour >= 4) {
+        // Jika eksekusi di atas jam 04:00 -> Rentang: Hari ini 09:00 sampai Besok 04:00
+        $startTime = strtotime("$currentDate 09:00");
+        $endTime = strtotime("$tomorrowDate 04:00");
+    } else {
+        // Jika eksekusi di bawah jam 04:00 -> Rentang: Kemarin 09:00 sampai Hari ini 04:00
+        $startTime = strtotime("$yesterdayDate 09:00");
+        $endTime = strtotime("$currentDate 04:00");
+    }
+
+    return [
+        'start' => $startTime,
+        'end' => $endTime
+    ];
+}

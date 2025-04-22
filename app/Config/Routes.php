@@ -8,6 +8,7 @@ use CodeIgniter\Router\RouteCollection;
 // landing
 $routes->get('/auth/(:any)', 'Landing::auth/$1');
 $routes->get('/iot/fqt/085175006585/(:any)', 'Iot::grup_iot/$1');
+$routes->get('/iot/fqt/08970576585/kasir', 'Kasir::index');
 $routes->get('/', 'Landing::index');
 // $routes->get('/(:any)/(:any)', 'Landing::index/$1/$2');
 $routes->post('/landing/cek_user', 'Landing::cek_user');
@@ -164,6 +165,12 @@ $routes->post('/iot/metode_tap', 'Iot::metode_tap'); //mengecek setiap detik apa
 $routes->post('/iot/delete_id_metode_tap', 'Iot::delete_id_metode_tap'); //hapus data setelah 15 detik
 $routes->post('/iot/afk', 'Iot::afk'); //mematikan lampu orang yang main tap tapi waktu belum selesai
 
+// kantin barber
+$routes->post('/iot/no_nota', 'Iot::no_nota');
+$routes->post('/iot/cari_barang', 'Iot::cari_barang');
+$routes->post('/iot/transaction', 'Iot::transaction');
+$routes->post('/iot/cek_absen_kantin', 'Iot::cek_absen_kantin');
+
 // iot perangkat iot tap
 $routes->post('/iot/absen_tap', 'Iot::absen_tap'); //iot pembeca absen
 $routes->post('/iot/bayar_tap', 'Iot::bayar_tap'); //iot pembaca pembayaran
@@ -174,6 +181,18 @@ $routes->post('/iot/tapping', 'Iot::iot_tapping'); // iot pembaca tap sebelum tr
 // 1. Apakah ada yang absen
 // 2. Apakah ada yang akan membayar melalui tap
 // 3. Status perangkat
-$routes->post('/iot/esp', 'Iot::esp');
+$routes->post('/iot/esp', 'Iot::esp'); //status perangkat, absen, tapping, dll
+$routes->post('/iot/perangkat', 'Iot::perangkat'); //status khusus perangkat
 
-// iot
+// iot kasir
+$routes->post('/kasir/cari_barang', 'Kasir::cari_barang');
+$routes->post('/kasir/cari_user', 'Kasir::cari_user');
+$routes->post('/kasir/transaksi', 'Kasir::transaksi');
+$routes->post('/kasir/hutang', 'Kasir::hutang');
+$routes->post('/kasir/transaksi_hari_ini', 'Kasir::transaksi_hari_ini');
+$routes->post('/kasir/cek_absen', 'Kasir::cek_absen');
+
+$routes->get('/notif', 'FirebaseController::index');
+$routes->post('/subscribe', 'FirebaseController::saveToken');
+$routes->get('/send', 'FirebaseController::sendPushNotification');
+$routes->post('/kasir/absen', 'Kasir::absen');

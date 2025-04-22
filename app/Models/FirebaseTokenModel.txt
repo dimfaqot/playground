@@ -1,0 +1,16 @@
+<?php
+
+namespace App\Models;
+
+use CodeIgniter\Model;
+use App\Libraries\FirebaseMessaging;
+
+class FirebaseTokenModel extends Model
+{
+    protected $table = 'firebase_tokens';
+    protected $primaryKey = 'id';
+    protected $allowedFields = ['user_id', 'fcm_token'];
+    protected $useTimestamps = true;
+    protected $createdField = 'created_at';
+    protected $updatedField = 'updated_at';
+}

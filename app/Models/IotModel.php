@@ -241,7 +241,7 @@ class IotModel extends Model
 
         sukses_js('Sukses', $perangkats, $sos, $q, $absen, $absen_iot);
     }
-    function cek_absen_tap($divisi, $grup)
+    function cek_absen_tap($divisi, $grup, $order = null)
     {
         // mencari shift saat ini
         // $now_time = strtotime(date("18:30:00"));
@@ -351,6 +351,7 @@ class IotModel extends Model
         // }
 
 
+
         $data = [
             'kategori' => "Absen",
             'divisi' => $shift_now['divisi'],
@@ -365,8 +366,44 @@ class IotModel extends Model
             'role' => $user['role']
         ];
 
+        if ($order == "Kasir") {
+            $data['status'] = "Tap";
+            $data['message'] = "";
+            $data['end'] = $shift_now['waktu_akhir'];
+        }
+
         if ($db_iot->insert($data)) {
-            sukses_js("Menunggu tap...", $data);
+            if ($order == "Kasir") {
+                $poinmu = round(((int)$now_time - (int)$shift_now['start'])  / 60);
+
+                if ($poinmu <= 31) {
+                    $poinmu = (int)settings('Absen') - $poinmu;
+                } else {
+                    $poinmu = ($poinmu - (int)settings('Absen')) * -2;
+                }
+                if ($poinmu >= 0) {
+                    $message = $shift_now["petugas"] . " tepat waktu dan poinmu: " . $poinmu;
+                } else {
+                    $message = $shift_now["petugas"] . " terlambat dan poinmu: " . $poinmu;
+                }
+                $data = [
+                    'tgl' => $now_time,
+                    'kategori' => "Absen",
+                    'divisi' => $data['divis'],
+                    'user_id' => $data['user_id'],
+                    'petugas' => $data['user'],
+                    'shift' => $shift_now['shift'],
+                    'grup' => "Kantin 1",
+                    'poin' => $poinmu,
+                    'disiplin' => $message
+                ];
+
+                if ($db_poin->insert($data)) {
+                    sukses_js("Sukses...");
+                }
+            } else {
+                sukses_js("Menunggu tap...", $data);
+            }
         } else {
             gagal_js("Insert data gagal...");
         }

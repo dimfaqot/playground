@@ -41,15 +41,6 @@ class Kantin extends BaseController
         return view(menu()['controller'], ['judul' => menu()['menu'], 'data' => $data, 'total' => $total, 'hutang' => $hutang, 'no_nota' => "K" . no_nota(time(), 'kantin'), 'kategori' => 'Kantin']);
     }
 
-    public function cari_barang()
-    {
-        $value = clear($this->request->getVar('value'));
-        $kategori = clear($this->request->getVar('kategori'));
-        $db = db('barang');
-        $q = $db->whereIn('kategori', [$kategori])->like('barang', $value, 'both')->orderBy('barang', 'ASC')->limit(8)->get()->getResultArray();
-
-        sukses_js("Sukses", $q);
-    }
 
     public function cari_user()
     {
@@ -59,6 +50,15 @@ class Kantin extends BaseController
         $q = $db->like('nama', $val, 'both')->orderBy('nama', 'ASC')->limit(10)->get()->getResultArray();
 
         sukses_js("Ok", $q);
+    }
+    public function cari_barang()
+    {
+        $value = clear($this->request->getVar('value'));
+        $kategori = clear($this->request->getVar('kategori'));
+        $db = db('barang');
+        $q = $db->whereIn('kategori', [$kategori])->like('barang', $value, 'both')->orderBy('barang', 'ASC')->limit(8)->get()->getResultArray();
+
+        sukses_js("Sukses", $q);
     }
     public function transaksi()
     {

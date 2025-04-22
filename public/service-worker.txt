@@ -1,0 +1,46 @@
+// service-worker.js
+
+// Import necessary Firebase modules (using CDN for simplicity)
+importScripts('https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js');
+importScripts('https://www.gstatic.com/firebasejs/11.6.0/firebase-messaging-sw.js');
+
+// Initialize the Firebase app in the service worker
+const firebaseConfig = {
+  apiKey: "AIzaSyBzDSVmYe15ppdfGK16ODjyZlqzw3JC6bg",
+  authDomain: "playground-1379a.firebaseapp.com",
+  projectId: "playground-1379a",
+  storageBucket: "playground-1379a.firebasestorage.app",
+  messagingSenderId: "673795209986",
+  appId: "1:673795209986:web:f641545a89209adcda201b"
+};
+
+// Initialize Firebase app
+firebase.initializeApp(firebaseConfig);
+
+// Get the Firebase Messaging service in the service worker
+const messaging = firebase.messaging();
+
+// Handle incoming push messages while the app is in the background
+messaging.onBackgroundMessage(function(payload) {
+  console.log('[firebase-messaging-sw.js] Received background message ', payload);
+  // Customize notification here
+  const notificationTitle = payload.notification.title || 'New Notification';
+  const notificationOptions = {
+    body: payload.notification.body || 'Check out the latest update!',
+    icon: '/logo.png', // Sesuaikan dengan path icon notifikasi Anda
+    click_action: payload.notification.click_action || '/', // URL to open when notification is clicked
+    data: payload.data // Include any additional data from the payload
+  };
+
+  return self.registration.showNotification(notificationTitle, notificationOptions);
+});
+
+// Handle notification click event (optional, but recommended)
+self.addEventListener('notificationclick', function(event) {
+  console.log('[service-worker.js] Notification click Received.');
+
+  event.notification.close();
+
+  // Open the URL associated with the notification
+  event.waitUntil(clients.openWindow(event.notification.data.url || event.notification.click_action || '/'));
+});

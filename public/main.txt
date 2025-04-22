@@ -1,0 +1,102 @@
+// public/js/main.js
+
+let pushNotificationRegistration = null;
+$(document).ready(function() {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/service-worker.js')
+      .then(function(registration) {
+        console.log('Service Worker registered with scope:', registration.scope);
+        pushNotificationRegistration = registration;
+        initializePushNotifications();
+      })
+      .catch(function(error) {
+        console.error('Service Worker registration failed:', error);
+      });
+  } else {
+    console.log('Service Workers are not supported.');
+  }
+});
+
+function initializePushNotifications() {
+  if (!('Notification' in window) || !('PushManager' in window)) {
+    console.log('Push notifications not supported.');
+    return;
+  }
+
+  Notification.requestPermission()
+    .then(function(permission) {
+      if (permission === 'granted') {
+        console.log('Permission granted for push notifications.');
+        subscribeUserToPush();
+      } else if (permission === 'denied') {
+        console.log('Permission denied for push notifications.');
+      } else {
+        console.log('User dismissed the permission request.');
+      }
+    });
+}
+
+function subscribeUserToPush() {
+  const applicationServerPublicKey = 'BNM9NxMTSTyvhZsfCNV2SL1C1bM-MB_ODMZu6i6X9v1UXzKvqsCa46TMG61P9WY0fMTOjUdOQOSJ8QyWxhOrGp8'; // Ganti dengan public VAPID key Anda
+
+  pushNotificationRegistration.pushManager.subscribe({
+    userVisibleOnly: true,
+    applicationServerKey: urlBase64ToUint8Array(applicationServerPublicKey)
+  })
+  .then(function(subscription) {
+    console.log('User subscribed:', subscription);
+    sendSubscriptionToServer(subscription); // Kirim subscription ke server Anda
+  })
+  .catch(function(error) {
+    console.error('Failed to subscribe the user: ', error);
+  });
+}
+  async function post(url = '', data = {}) {
+            const response = await fetch(baseUrl + url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+            return response.json(); // parses JSON response into native JavaScript objects
+        }
+function sendSubscriptionToServer(subscription) {
+//     console.log(subscription);
+//     return;
+//   $.ajax({
+//     url: '/subscribe', // Endpoint CI4 untuk menyimpan subscription
+//     type: 'POST',
+//     dataType: 'json',
+//     data: { subscription: JSON.stringify(subscription) },
+//     // Sertakan CSRF token jika diaktifkan di CI4
+//     headers: {
+//       'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+//     },
+//     success: function(response) {
+//       console.log('Subscription saved on server:', response);
+//     },
+//     error: function(xhr, status, error) {
+//       console.error('Error saving subscription on server:', error);
+//     }
+//   });
+
+post("subscribe", {subscription}).then(res=>{
+    console.log(res.message);
+})
+}
+
+function urlBase64ToUint8Array(base64String) {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  const base64 = (base64String + padding)
+    .replace(/-/g, '+')
+    .replace(/_/g, '/');
+
+  const rawData = window.atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
+
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+  return outputArray;
+}

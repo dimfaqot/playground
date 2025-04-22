@@ -1,0 +1,30 @@
+// public/firebase-messaging-sw.js
+
+importScripts('https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js');
+importScripts('https://www.gstatic.com/firebasejs/11.6.0/firebase-messaging-sw.js');
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBzDSVmYe15ppdfGK16ODjyZlqzw3JC6bg",
+  authDomain: "playground-1379a.firebaseapp.com",
+  projectId: "playground-1379a",
+  storageBucket: "playground-1379a.firebasestorage.app",
+  messagingSenderId: "673795209986",
+  appId: "1:673795209986:web:f641545a89209adcda201b"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const messaging = firebase.messaging();
+
+messaging.onBackgroundMessage(function(payload) {
+  console.log('[firebase-messaging-sw.js] Received background message ', payload);
+  // Customize notification here
+  const notificationTitle = payload.notification.title || 'New Notification';
+  const notificationOptions = {
+    body: payload.notification.body || 'Check out the latest update!',
+    icon: '/logo.png', // Sesuaikan dengan path icon notifikasi Anda
+    click_action: payload.notification.click_action || '/',
+    data: payload.data
+  };
+  return self.registration.showNotification(notificationTitle, notificationOptions);
+});

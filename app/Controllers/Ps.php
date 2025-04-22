@@ -60,8 +60,10 @@ class Ps extends BaseController
 
         $dari = time();
         $ke = 0;
+        $total = 0;
         if ($durasi > 0) {
             $ke += $dari + ((60 * 60) * $durasi);
+            $total = (int)$harga * (int)$durasi;
         }
 
         $db = db(menu()['tabel']);
@@ -73,6 +75,7 @@ class Ps extends BaseController
             'status' => 0,
             'harga' => $harga,
             'durasi' => $durasi * 60,
+            'total' => $total,
             'pembeli' => user()['nama'],
             'user_id' => user()['id'],
             'status' => 1,
@@ -107,6 +110,7 @@ class Ps extends BaseController
             $q['metode'] = "Play";
             $q['status'] = 1;
         }
+        $q['total'] = (int)$q['harga'] * round($q['durasi']);
 
         $db->where('id', $id);
         if ($db->update($q)) {
