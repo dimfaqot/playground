@@ -102,10 +102,10 @@ class Billiard extends BaseController
         $q['ke'] = $q['ke'] + ((60 * 60) * $durasi);
         $q['durasi'] = (int)$q['durasi'] + ($durasi * 60);
         $q['petugas'] = user()['nama'];
-        if ($q['metode'] == "Over") {
-            $q['metode'] = "Play";
-            $q['status'] = 1;
-        }
+
+        $q['metode'] = "Play";
+        $q['status'] = 1;
+
 
         $db->where('id', $id);
         if ($db->update($q)) {

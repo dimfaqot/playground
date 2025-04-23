@@ -4,7 +4,7 @@ namespace App\Controllers;
 
 use App\Models\FunModel;
 
-class Ps extends BaseController
+class Tap extends BaseController
 {
     function __construct()
     {
@@ -21,10 +21,9 @@ class Ps extends BaseController
     {
         $db = db(menu()['tabel']);
         $fun = new FunModel();
-        $perangkat = $fun->Allstatus("Ps");
-
+        $perangkat = $fun->Allstatus("Billiard");
         $data = [];
-        $q = $db->whereNotIn('total', [0])->orderBy('tgl', 'DESC')->get()->getResultArray();
+        $q = $db->orderBy('tgl', 'DESC')->get()->getResultArray();
 
         $total = 0;
         $hutang = 0;
@@ -43,7 +42,6 @@ class Ps extends BaseController
             }
         }
 
-
         return view(menu()['controller'], ['judul' => menu()['menu'], 'perangkat' => $perangkat, 'data' => $data, 'total' => $total, 'hutang' => $hutang]);
     }
 
@@ -57,7 +55,6 @@ class Ps extends BaseController
         if (clear($this->request->getVar('durasi')) == "Durasi") {
             gagal(base_url(menu()['controller']), "Durasi belum dipilih!.");
         }
-
         $dari = time();
         $ke = 0;
         $total = 0;
@@ -74,8 +71,8 @@ class Ps extends BaseController
             'ke' => $ke,
             'status' => 0,
             'harga' => $harga,
-            'durasi' => $durasi * 60,
             'total' => $total,
+            'durasi' => $durasi * 60,
             'pembeli' => user()['nama'],
             'user_id' => user()['id'],
             'status' => 1,
@@ -106,11 +103,9 @@ class Ps extends BaseController
         $q['durasi'] = (int)$q['durasi'] + ($durasi * 60);
         $q['petugas'] = user()['nama'];
 
-
         $q['metode'] = "Play";
         $q['status'] = 1;
 
-        $q['total'] = (int)$q['harga'] * round($q['durasi']);
 
         $db->where('id', $id);
         if ($db->update($q)) {
@@ -188,7 +183,6 @@ class Ps extends BaseController
             gagal_js("Transaksi gagal!.");
         }
     }
-
     public function lunas()
     {
         $id = clear($this->request->getVar('id'));
@@ -229,7 +223,6 @@ class Ps extends BaseController
 
         sukses_js("Ok", $q);
     }
-
     public function pindah_meja()
     {
         $id = clear($this->request->getVar('id'));

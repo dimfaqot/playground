@@ -38,6 +38,12 @@ $routes->get('/home/kantin/notif', 'Home::notif_kantin');
 $routes->get('/home/poin/notif', 'Home::notif_poin');
 $routes->post('/home/read_notif', 'Home::read_notif');
 
+// pemasukan tap
+$routes->post('/tap/notif', 'Tap::notif');
+$routes->get('/tap/kantin/notif', 'Tap::notif_kantin');
+$routes->get('/tap/poin/notif', 'Tap::notif_poin');
+$routes->post('/tap/read_notif', 'Tap::read_notif');
+
 // menu
 $routes->get('/menu', 'Menu::index');
 $routes->post('/menu/add', 'Menu::add');

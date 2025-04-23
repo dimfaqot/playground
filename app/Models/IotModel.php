@@ -722,4 +722,22 @@ class IotModel extends Model
             gagal_js("Sos failed!.");
         }
     }
+
+    function sos_barcode_kantin()
+    {
+        $sos = ['pin' => 33, 'status' => 0];
+
+        $db = db('kantin');
+        $q = $db->where('metode', 'Barcode')->get()->getRowArray();
+        if ($q) {
+            $sos['status'] = 1;
+        }
+
+        $db = db('iot');
+        $q = $db->where('kategori', 'Sos')->get()->getRowArray();
+        if ($q) {
+            $sos['status'] = 1;
+        }
+        return $sos;
+    }
 }
