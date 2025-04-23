@@ -871,6 +871,21 @@ class Iot extends BaseController
 
             $perangkat[] = $val;
         }
+        $sos = ['pin' => 33, 'status' => 0];
+
+        $db = db('kantin');
+        $q = $db->where('metode', 'Barcode')->get()->getRowArray();
+        if ($q) {
+            $sos['status'] = 1;
+        }
+
+        $db = db('iot');
+        $q = $db->where('kategori', 'Sos')->get()->getRowArray();
+        if ($q) {
+            $sos['status'] = 1;
+        }
+
+        $perangkat[] = $sos;
 
         sukses_js('Sukses', $perangkat);
     }

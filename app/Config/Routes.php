@@ -183,6 +183,7 @@ $routes->post('/iot/tapping', 'Iot::iot_tapping'); // iot pembaca tap sebelum tr
 // 3. Status perangkat
 $routes->post('/iot/esp', 'Iot::esp'); //status perangkat, absen, tapping, dll
 $routes->post('/iot/perangkat', 'Iot::perangkat'); //status khusus perangkat
+$routes->post('/iot/ps', 'Iot::ps'); //status khusus perangkat
 
 // iot kasir
 $routes->post('/kasir/cari_barang', 'Kasir::cari_barang');
