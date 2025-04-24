@@ -884,8 +884,17 @@ class Iot extends BaseController
 
         // url yang diakses esp untuk mengecek apakah perangkat status 1 untuk nyala dan 0 untuk mati
         $db = db('perangkat');
-        $perangkat = $db->select('pin,status')->where('lokasi_esp', $decode['data'])->get()->getResultArray();
-
+        $q = $db->select('pin,status')->where('lokasi_esp', $decode['data'])->get()->getResultArray();
+        $perangkat = [];
+        foreach ($q as $i) {
+            $val = ['pin' => $i['pin'], 'status' => $i['status']];
+            $dbp = db(strtolower($i['kategori']));
+            $q = $dbp->where('perangkat', $i['perangkat'])->where('status', 1)->get()->getRowArray();
+            if ($q) {
+                $val['status'] = $q['status'];
+            }
+            $perangkat[] = $val;
+        }
         sukses_js('Sukses', $perangkat);
     }
 
