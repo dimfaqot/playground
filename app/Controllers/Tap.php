@@ -17,32 +17,55 @@ class Tap extends BaseController
     }
 
 
-    public function index(): string
+    public function index($angkatan = null, $tahun = null, $bulan = null): string
     {
-        $db = db(menu()['tabel']);
-        $fun = new FunModel();
-        $perangkat = $fun->Allstatus("Billiard");
-        $data = [];
-        $q = $db->orderBy('tgl', 'DESC')->get()->getResultArray();
 
-        $total = 0;
-        $hutang = 0;
-        foreach ($q as $i) {
-            if ($i['status'] == 0) {
-                if ($i['metode'] == "Hutang") {
-                    $data[] = $i;
+        $tahun = ($tahun == null ? date('Y') : $tahun);
+        $bulan = ($bulan == null ? date('m') : $bulan);
+        $angkatan = ($angkatan == null ? (int)date('Y') - 1 : $angkatan);
+
+
+        $dbu = db('user');
+        $users = $dbu->where('angkatan', $angkatan)->orderBy('nama', 'ASC')->get()->getResultArray();
+
+        // $santris = [];
+        // foreach ($angkatans as $i) {
+        //     $q = $dbu->where('angkatan', $i['angkatan'])->orderBy('nama', 'ASC')->get()->getResultArray();
+        //     $santris[$i['angkatan']] = $q;
+        // }
+        $data = [];
+        foreach ($users as $a) {
+            $temp_data = [];
+            $total = 0;
+            foreach (options('Divisi') as $d) {
+                $dbd = db(strtolower($d['value']));
+
+                $dbd->where("user_id", $a['id']);
+                $dbd->where("metode", "Tap");
+                $dbd->where("YEAR(FROM_UNIXTIME(tgl))", $tahun);
+                $dbd->where("LPAD(MONTH(FROM_UNIXTIME(tgl)), 2, '0')", $bulan);
+                $query = $dbd->get();
+                $result = $query->getResultArray();
+
+                foreach ($result as $i) {
+                    $i['divisi'] = $d['value'];
                     $total += (int)$i['total'];
-                    $hutang += (int)$i['total'];
-                } else {
-                    if (date('d') == date('d', $i['tgl']) && date('m') == date('m', $i['tgl']) && date('Y') == date('Y', $i['tgl'])) {
-                        $data[] = $i;
-                        $total += (int)$i['total'];
-                    }
+                    $temp_data[] = $i;
                 }
             }
+            $data[$a['id']] = ['profile' => $a, 'total' => $total, 'data' => $temp_data];
         }
 
-        return view(menu()['controller'], ['judul' => menu()['menu'], 'perangkat' => $perangkat, 'data' => $data, 'total' => $total, 'hutang' => $hutang]);
+        dd($data); // Debugging, bisa dihapus jika tidak diperlukan
+
+        // Pastikan variabel $perangkat, $total, dan $hutang sudah dideklarasikan sebelumnya
+        return view(menu()['controller'], [
+            'judul' => menu()['menu'],
+            'perangkat' => $perangkat ?? [],
+            'data' => $data,
+            'total' => $total ?? 0,
+            'hutang' => $hutang ?? 0
+        ]);
     }
 
     public function add()

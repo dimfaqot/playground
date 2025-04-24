@@ -39,7 +39,7 @@ $routes->get('/home/poin/notif', 'Home::notif_poin');
 $routes->post('/home/read_notif', 'Home::read_notif');
 
 // pemasukan tap
-$routes->post('/tap/notif', 'Tap::notif');
+$routes->get('/tap', 'Tap::index');
 $routes->get('/tap/kantin/notif', 'Tap::notif_kantin');
 $routes->get('/tap/poin/notif', 'Tap::notif_poin');
 $routes->post('/tap/read_notif', 'Tap::read_notif');
@@ -189,6 +189,7 @@ $routes->post('/iot/tapping', 'Iot::iot_tapping'); // iot pembaca tap sebelum tr
 // 3. Status perangkat
 $routes->post('/iot/esp', 'Iot::esp'); //status perangkat, absen, tapping, dll
 $routes->post('/iot/perangkat', 'Iot::perangkat'); //status khusus perangkat
+$routes->post('/iot/billiard', 'Iot::billiard'); //status khusus billiard 2
 $routes->post('/iot/ps', 'Iot::ps'); //status khusus perangkat
 
 // iot kasir

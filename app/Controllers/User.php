@@ -230,7 +230,56 @@ class User extends BaseController
         $tabel = clear($this->request->getVar('tabel'));
         $fun = new FunModel();
         $db = db($tabel, "new_ps");
-        $dbu = db('user');
+        $dbu = db('users');
+        dd('Ok');
+        if ($tabel == 'santri') {
+            $dbu = db('userss');
+            $user_lama = $dbu->orderBy('id', 'ASC')->get()->getResultArray();
+
+            $dbx = \Config\Database::connect();
+            $db = $dbx->table('user');
+
+            foreach ($user_lama as $i) {
+                unset($i['id']);
+                $db->insert($i);
+            }
+
+
+            $dbs = db('santri', 'santri'); //263
+            $q = $dbs->whereNotIn('pondok', ['Sainsus'])->whereNotIn('uid', [''])->orderBy('tahun_masuk', 'ASC')->get()->getResultArray();
+
+            $fun = new \App\Models\FunModel();
+            $count = 0;
+
+            foreach ($q as $i) {
+
+                $val = [
+                    'nama' => $i['nama'],
+                    'role' => 'Member',
+                    'hp' => '',
+                    'uid' => $i['uid'],
+                    'status' => 1,
+                    'angkatan' => $i['tahun_masuk'],
+                    'noid' => $i['no_id']
+                ];
+                if ($i['sub'] == "SMA") {
+                    $val['angkatan'] = (int)$i['tahun_masuk'] - 3;
+                }
+                if ($db->insert($val)) {
+                    $new_id = $dbx->insertID();
+                    $user = $db->where('id', $new_id)->get()->getRowArray();
+                    if ($user) {
+                        $user['fulus'] = $fun->enkripsi_fulus($user, 0);
+                        $db->where('id', $new_id);
+                        if ($db->update($user)) {
+                            $count++;
+                        }
+                    }
+                }
+            }
+
+            dd($count);
+        }
 
         if ($tabel == "users") {
             $users_old = $db->orderBy('id', 'ASC')->get()->getResultArray();

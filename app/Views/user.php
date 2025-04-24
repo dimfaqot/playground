@@ -11,7 +11,8 @@ $dbs = [
     ['text' => "Pengeluaran", 'tabel' => 'pengeluaran'],
     ['text' => "Barang", 'tabel' => 'barang'],
     ['text' => "Hutang", 'tabel' => 'hutang'],
-    ['text' => "Koperasi", 'tabel' => 'koperasi']
+    ['text' => "Koperasi", 'tabel' => 'koperasi'],
+    ['text' => "Santri", 'tabel' => 'santri']
 ]
 ?>
 <h6 style="color: <?= tema('link_secondary'); ?>;"><i class="<?= menu()['icon']; ?>"></i> <?= strtoupper(menu()['menu']); ?></h6>

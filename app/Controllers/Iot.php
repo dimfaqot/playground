@@ -877,6 +877,17 @@ class Iot extends BaseController
 
         sukses_js('Sukses', $perangkat);
     }
+    public function billiard()
+    {
+        $jwt = clear($this->request->getVar('jwt'));
+        $decode = decode_jwt($jwt);
+
+        // url yang diakses esp untuk mengecek apakah perangkat status 1 untuk nyala dan 0 untuk mati
+        $db = db('perangkat');
+        $perangkat = $db->select('pin,status')->where('lokasi_esp', $decode['data'])->get()->getResultArray();
+
+        sukses_js('Sukses', $perangkat);
+    }
 
 
     // kantin barber
