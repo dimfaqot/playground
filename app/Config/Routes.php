@@ -40,10 +40,8 @@ $routes->post('/home/read_notif', 'Home::read_notif');
 
 // pemasukan tap
 $routes->get('/tap', 'Tap::index');
-$routes->get('/tap/kantin/notif', 'Tap::notif_kantin');
-$routes->get('/tap/poin/notif', 'Tap::notif_poin');
-$routes->post('/tap/read_notif', 'Tap::read_notif');
-
+$routes->get('/tap/(:num)/(:any)/(:num)', 'Tap::index/$1/$2/$3');
+$routes->post('/tap/bayar', 'Tap::bayar');
 // menu
 $routes->get('/menu', 'Menu::index');
 $routes->post('/menu/add', 'Menu::add');

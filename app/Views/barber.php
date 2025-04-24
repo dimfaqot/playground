@@ -408,7 +408,7 @@
     $(document).on('click', '.btn_daftar_transaksi', function(e) {
         e.preventDefault();
         let total = parseInt(str_replace(".", "", $(".total").text()));
-        let html = '';
+        let html = '<div class="container">';
         html += `<div class="text-center mb-3">
                             <span class="text_main" style="font-size: small;">TOTAL</span>
                             <div data-total="${total}" class="fw-bold total_pembayaran">${angka(total)}</div>
@@ -426,6 +426,7 @@
                             <input type="text" class="mt-2 form-control form-control-sm uang_pembayaran text-center angka" value="${angka(total)}" placeholder="Uang pembayaran">
                         </div>`;
         html += tabel("btn_transaksi");
+        html += '</div>';
         popupButton.html(html);
         setTimeout(() => {
             $(".cari_user").focus();
