@@ -886,10 +886,10 @@ class Iot extends BaseController
         $db = db('perangkat');
         $q = $db->select('pin,status')->where('lokasi_esp', $decode['data'])->get()->getResultArray();
         $perangkat = [];
-        $dbp = db('billiard');
+        $dbb = db('billiard');
         foreach ($q as $i) {
             $val = ['pin' => $i['pin'], 'status' => 0];
-            $q = $dbp->where('perangkat', $i['perangkat'])->where('status', 1)->get()->getRowArray();
+            $q = $dbb->where('perangkat', $i['perangkat'])->where('status', 1)->get()->getRowArray();
             if ($q) {
                 $val['status'] = $q['status'];
             }
